@@ -2,7 +2,7 @@
 import * as d3 from 'd3'
 import BarChart from '@/components/BarChart.vue'
 import RankingChart from '@/components/RankingChart.vue'
-import ScatterplotD3Controlled from '@/components/ScatterplotD3Controlled.vue'
+import ScatterplotVueControlled from '@/components/ScatterplotVueControlled.vue'
 
 type Props = {
   data: any
@@ -22,7 +22,7 @@ const colorScale = d3.scaleOrdinal().domain(props.data.ids).range(d3.schemeTable
     <div class="col-3">
       <div class="row">
         <div class="col-12">
-          <ScatterplotD3Controlled
+          <ScatterplotVueControlled
             v-bind:data="data.experience"
             v-bind:margin="margin"
             v-bind:colorScale="colorScale"
