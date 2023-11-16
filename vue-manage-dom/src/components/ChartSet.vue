@@ -29,7 +29,11 @@ const colorScale = d3.scaleOrdinal().domain(props.data.ids).range(d3.schemeTable
           />
         </div>
         <div class="col-12">
-          <BarChart v-bind:data="data" v-bind:margin="margin" />
+          <BarChart
+            v-bind:data="data.experience"
+            v-bind:margin="margin"
+            v-bind:colorScale="colorScale"
+          />
         </div>
       </div>
     </div>

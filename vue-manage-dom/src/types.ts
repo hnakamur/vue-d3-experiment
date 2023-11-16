@@ -25,3 +25,9 @@ export type RankingFilter = {
   id: string
   label: string
 }
+
+export type Awareness = {
+  id: string
+  name: string
+  awareness_percentage: number
+}
