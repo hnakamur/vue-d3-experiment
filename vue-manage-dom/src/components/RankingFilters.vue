@@ -7,6 +7,14 @@ type Props = {
   activeFilter: string
 }
 defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'select', id: string): void
+}>()
+
+const onSelect = (id: string) => {
+  emit('select', id)
+}
 </script>
 
 <template>
@@ -17,6 +25,7 @@ defineProps<Props>()
       v-bind:id="filter.id"
       v-bind:label="filter.label"
       v-bind:isActive="activeFilter === filter.id"
+      v-on:select="onSelect"
     />
   </div>
 </template>

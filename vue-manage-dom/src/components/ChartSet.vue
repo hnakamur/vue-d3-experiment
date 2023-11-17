@@ -17,7 +17,7 @@ const colorScale = d3.scaleOrdinal().domain(props.data.ids).range(d3.schemeTable
   <h1>Front-end Frameworks</h1>
   <div class="row">
     <div class="col-9">
-      <RankingChart v-bind:data="data" v-bind:margin="margin" />
+      <RankingChart v-bind:data="data" v-bind:margin="margin" v-bind:colorScale="colorScale" />
     </div>
     <div class="col-3">
       <div class="row">

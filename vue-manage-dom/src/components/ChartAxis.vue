@@ -69,14 +69,3 @@ const ticks = props.type !== 'band' ? props.scale.ticks(numberOfTicks) : undefin
     </text>
   </g>
 </template>
-
-<style scoped>
-/* axis */
-.axis line {
-  stroke: #888b8d;
-}
-.axis text {
-  font-size: 14px;
-  fill: #374f5e;
-}
-</style>

@@ -1,18 +1,18 @@
+export type YearRankKey = 'year' | 'rank' | 'percentage_question'
+
 export type YearRank = {
-  year: number
-  rank: number
-  percentage_question: number
+  [key in YearRankKey]: number
 }
+
+export type ExperienceRankKey = 'usage' | 'awareness' | 'interest' | 'satisfaction'
 
 export type Experience = {
   id: string
   name: string
   user_count: number
   retention_percentage: number
-  usage: YearRank[]
-  awareness: YearRank[]
-  interest: YearRank[]
-  satisfaction: YearRank[]
+} & {
+  [key in ExperienceRankKey]: YearRank[]
 }
 
 export type ChartData = {
@@ -22,7 +22,7 @@ export type ChartData = {
 }
 
 export type RankingFilter = {
-  id: string
+  id: ExperienceRankKey
   label: string
 }
 

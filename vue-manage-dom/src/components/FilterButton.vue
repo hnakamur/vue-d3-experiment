@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
 type Props = {
   id: string
   isActive: boolean
@@ -11,14 +9,22 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'button'
 })
 
-const buttonClass = computed(() => `button ${props.isActive ? 'active' : ''}`)
+const emit = defineEmits<{
+  (e: 'select', id: string): void
+}>()
+
 const onClick = () => {
   console.log('FilterButton.onClick, id=', props.id)
+  emit('select', props.id)
 }
 </script>
 
 <template>
-  <button v-bind:class="buttonClass" v-on:click="onClick" v-bind:type="type">
+  <button
+    v-bind:class="`button ${isActive ? 'active' : ''}`"
+    v-on:click="onClick"
+    v-bind:type="type"
+  >
     {{ label }}
   </button>
 </template>
