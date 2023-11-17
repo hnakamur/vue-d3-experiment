@@ -13,10 +13,7 @@ const emit = defineEmits<{
   (e: 'select', id: string): void
 }>()
 
-const onClick = () => {
-  console.log('FilterButton.onClick, id=', props.id)
-  emit('select', props.id)
-}
+const onClick = () => emit('select', props.id)
 </script>
 
 <template>

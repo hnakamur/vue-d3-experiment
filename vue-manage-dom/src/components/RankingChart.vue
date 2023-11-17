@@ -7,7 +7,7 @@ import ChartCurve from '@/components/ChartCurve.vue'
 import ChartLabel from '@/components/ChartLabel.vue'
 import RankingFilters from '@/components/RankingFilters.vue'
 import UiCard from '@/components/UiCard.vue'
-import type { ChartData, ExperienceRankKey, RankingFilter } from '@/types'
+import type { ChartData, ExperienceRankKey, RankingFilter, YearRank } from '@/types'
 
 type Props = {
   data: ChartData
@@ -36,13 +36,34 @@ const rankingFilters: RankingFilter[] = [
 ]
 const activeFilter = ref<ExperienceRankKey>('satisfaction')
 
-const xScale = d3.scalePoint().domain(props.data.years).range([0, innerWidth])
-const ranks = d3.range(1, props.data.ids.length + 1)
-const yScale = d3.scalePoint().domain(ranks).range([0, innerHeight])
+const xScale = d3.scalePoint()
+const yScale = d3.scalePoint()
+const xAccessor = (d: YearRank) => xScale(d.year.toString())
+const yAccessor = (d: YearRank) => (d.rank ? yScale(d.rank.toString()) : null)
 
-const filterSelectionHandler = (id: ExperienceRankKey) => {
+const years = props.data.years.map((year) => year.toString())
+xScale.domain(years).range([0, innerWidth])
+const ranks = d3.range(1, props.data.ids.length + 1).map((rank) => rank.toString())
+yScale.domain(ranks).range([0, innerHeight])
+
+const labelVerticalPosition = (item: { rank: number }[], position: string) => {
+  if (position === 'left' && item[0].rank) {
+    return yScale(item[0].rank.toString())
+  } else if (position === 'right') {
+    return yScale(item[item.length - 1].rank.toString())
+  } else {
+    return 0
+  }
+}
+
+const getBadgeTranslation = (selection: YearRank): [number, number] => [
+  parseFloat(xScale(selection.year.toString()) as unknown as string),
+  parseFloat(yScale(selection.rank.toString()) as unknown as string)
+]
+
+const filterSelectionHandler = (id: string) => {
   if (activeFilter.value !== id) {
-    activeFilter.value = id
+    activeFilter.value = id as ExperienceRankKey
   }
 }
 </script>
@@ -70,7 +91,7 @@ const filterSelectionHandler = (id: ExperienceRankKey) => {
           v-for="year in data.years"
           v-bind:key="`line-year-${year}`"
           class="axis"
-          v-bind:transform="`translate(${xScale(year)}, 0)`"
+          v-bind:transform="`translate(${xScale(year.toString())}, 0)`"
         >
           <line x1="0" v-bind:y1="innerHeight" x2="0" y2="0" stroke-dasharray="6 4" />
           <text x="0" v-bind:y="innerHeight + 40" text-anchor="middle">
@@ -80,17 +101,15 @@ const filterSelectionHandler = (id: ExperienceRankKey) => {
         <g v-for="framework in data.experience" v-bind:key="`curve-${framework.id}`">
           <ChartCurve
             v-bind:data="framework[activeFilter]"
-            v-bind:xScale="xScale"
-            v-bind:yScale="yScale"
-            xAccessor="year"
-            yAccessor="rank"
             v-bind:stroke="colorScale(framework.id)"
+            v-bind:xAccessor="xAccessor"
+            v-bind:yAccessor="yAccessor"
             v-bind:strokeWidth="5"
           />
           <ChartLabel
             v-if="framework[activeFilter] && framework[activeFilter][0].rank"
             v-bind:x="-25"
-            v-bind:y="yScale(framework[activeFilter][0].rank)"
+            v-bind:y="labelVerticalPosition(framework[activeFilter], 'left') as number"
             v-bind:color="colorScale(framework.id)"
             v-bind:label="framework.name"
             textAnchor="end"
@@ -98,7 +117,7 @@ const filterSelectionHandler = (id: ExperienceRankKey) => {
           <template v-if="framework[activeFilter]">
             <ChartLabel
               v-bind:x="innerWidth + 25"
-              v-bind:y="yScale(framework[activeFilter][framework[activeFilter].length - 1].rank)"
+              v-bind:y="labelVerticalPosition(framework[activeFilter], 'right') as number"
               v-bind:color="colorScale(framework.id)"
               v-bind:label="framework.name"
               textAnchor="start"
@@ -109,7 +128,7 @@ const filterSelectionHandler = (id: ExperienceRankKey) => {
             >
               <ChartBadge
                 v-if="selection.rank"
-                v-bind:translation="[xScale(selection.year), yScale(selection.rank)]"
+                v-bind:translation="getBadgeTranslation(selection)"
                 v-bind:strokeColor="colorScale(framework.id)"
                 v-bind:label="`${Math.round(selection.percentage_question)}%`"
               />

@@ -65,7 +65,7 @@ const yScale = d3.scaleLinear().domain([0, 100]).range([innerHeight, 0])
         <ChartRectangle
           v-for="framework in awarenessData"
           v-bind:key="framework.id"
-          v-bind:x="(xScale(framework.name) as number)"
+          v-bind:x="xScale(framework.name) as number"
           v-bind:y="yScale(framework.awareness_percentage)"
           v-bind:width="xScale.bandwidth()"
           v-bind:height="innerHeight - yScale(framework.awareness_percentage)"
